@@ -30,8 +30,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         // Timer for game updates (30 ms)
         this.gameTimer = new Timer(30, this);
         
-        // Timer for enemy spawning every 1.5 seconds (1500 ms)
-        this.spawnTimer = new Timer(800, new ActionListener() {
+        // Timer for enemy spawning 
+        this.spawnTimer = new Timer(1200, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 spawnNextEnemy();
@@ -55,10 +55,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         if (gameComplete) {
             // Display "You Won" or "You Lost" message
             g.setFont(new Font("Arial", Font.BOLD, 36));
-            g.setColor(Color.GREEN);
+            
             if (gameLost) {
+            	g.setColor(Color.RED);
                 g.drawString("You Lost", 250, 300);
             } else {
+            	g.setColor(Color.GREEN);
                 g.drawString("You Won!", 250, 300);
             }
             return;
@@ -70,7 +72,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         player.draw(g);
 
-        // Draw lives at the top-right corner
+        //Draw lives at the topright corner
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.setColor(Color.RED);
         g.drawString("Lives: " + lives, getWidth() - 100, 30);
@@ -86,18 +88,18 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     private void spawnNextEnemy() {
         if (spawnIndex < spawnSequence.length) {
-            // Spawn the next enemy in the sequence
+            // Spaqn the next enemy in the  sequence
             String note = spawnSequence[spawnIndex];
             
-            // Calculate a random x position within the screen width
+            //Calculate a random x position (within screen width)
             int panelWidth = getWidth();
-            int enemyWidth = 30;  // Assuming each enemy is 30 pixels wide
-            int x = (int) (Math.random() * (panelWidth - (enemyWidth+10)));  // Ensures x is within screen bounds
+            int enemyWidth = 30;
+            int x = (int) (Math.random() * (panelWidth - (enemyWidth+10)));// Make x within screen bounds
             
-            enemies.add(new MusicNote(note, x, 0));  // Spawn at calculated x position at the top
+            enemies.add(new MusicNote(note, x, 0));//Spawn at calculated x position at the top
             spawnIndex++;
         } else {
-            // Stop the spawn timer if all enemies in the sequence have been spawned
+            //Stop the spawn timer if all notes have been spawned
             spawnTimer.stop();
         }
     }
@@ -105,7 +107,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (gameComplete) {
-            // Stop game updates once game is complete
+            //Stop game updates once game is complete
             return;
         }
 
@@ -115,21 +117,21 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         List<MusicNote> enemiesToRemove = new ArrayList<>();
         for (MusicNote enemy : enemies) {
             enemy.update();
-            if (enemy.getY() > getHeight()) {  // Check if the enemy reaches the bottom
+            if (enemy.getY() > getHeight()) {//Check if the enemy reaches the bottom
                 enemiesToRemove.add(enemy);
-                decreaseLives();  // Decrease lives when an enemy reaches the bottom
+                decreaseLives();//Decrease lives when an enemy reaches the bottom
             }
         }
         enemies.removeAll(enemiesToRemove);
 
-        // Update bullets
+        //Update bullets
         for (Bullet bullet : bullets) {
             bullet.update();
         }
 
-        checkCollisions();  // Check for collisions between bullets and enemies
+        checkCollisions();//Check for collisions between bullets and enemies
 
-        // Check if the player won or lost the game
+        //Check if the player won or lost the game
         if (lives <= 0) {
             gameComplete = true;
             gameLost = true;
@@ -154,7 +156,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     bulletsToRemove.add(bullet);
                     enemiesToRemove.add(enemy);
 
-                    // Play sound based on enemy note
+                    //Play sound based on enemy note
                     enemy.playSound();
                 }
             }
@@ -179,8 +181,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         player.keyPressed(e);
 
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            int bulletStartX = player.getX() + 35;  // Center horizontally
-            int bulletStartY = player.getY();       // Top edge of character
+            int bulletStartX = player.getX() + 35; // Center horizontally
+            int bulletStartY = player.getY();
             bullets.add(new Bullet(bulletStartX, bulletStartY));
         }
     }
